@@ -1,0 +1,184 @@
+<?php
+
+/**
+ * @file
+ * Installation file for services_client module.
+ */
+
+/**
+ * Implementation of hook_schema().
+ */
+function services_client_schema() {
+  $schema = array();
+
+  $schema['services_client_connection'] = array(
+    'description' => 'Services client connections',
+    'fields' => array(
+      'cid' => array(
+        'type'        => 'serial',
+        'description' => 'Primary ID field for the table. Not used for anything except internal lookups.',
+        'unsigned'    => TRUE,
+        'not null'    => TRUE,
+        'no export'   => TRUE,
+      ),
+      'name' => array(
+        'description' => 'The name of the connection.',
+        'type'        => 'varchar',
+        'length'      => 255,
+        'not null'    => TRUE,
+      ),
+      'title' => array(
+        'description' => 'The title of the connection.',
+        'type'        => 'varchar',
+        'length'      => 255,
+        'not null'    => TRUE,
+      ),
+      'domain' => array(
+        'description' => 'Domain name of master server.',
+        'type'        => 'varchar',
+        'length'      => 255,
+        'not null'    => TRUE,
+      ),
+      'endpoint' => array(
+        'description' => 'Services endpoint on domain.',
+        'type'        => 'varchar',
+        'length'      => 255,
+        'not null'    => TRUE,
+      ),
+      'secured' => array(
+        'description' => 'Holds a switch whether its SSL connection',
+        'type'        => 'varchar',
+        'length'      => 3,
+        'not null'    => TRUE,
+      ),
+      'username' => array(
+        'description' => 'Services client username.',
+        'type'        => 'varchar',
+        'length'      => 32,
+        'not null'    => TRUE,
+      ),
+      'password' => array(
+        'description' => 'Services client username.',
+        'type'        => 'varchar',
+        'length'      => 32,
+        'not null'    => TRUE,
+      ),
+      'version' => array(
+         'type'       => 'int',
+         'length'     => 2,
+         'not null'   => TRUE,
+         'default'    => 0
+      ),
+      'debug' => array(
+         'type'       => 'int',
+         'length'     => 2,
+         'not null'   => TRUE,
+         'default'    => 0
+      ),
+    ),
+    'primary key' => array('cid'),
+    'unique keys' => array(
+      'name' => array('name'),
+    ),
+  );
+
+  $schema['services_client_connection_hook'] = array(
+    'description' => 'Connection hooks',
+    'fields' => array(
+      'hid' => array(
+        'type'        => 'serial',
+        'description' => 'Primary ID field for the table. Not used for anything except internal lookups.',
+        'unsigned'    => TRUE,
+        'not null'    => TRUE,
+        'no export'   => TRUE,
+      ),
+      'conn_name' => array(
+        'description' => 'The name of the connection.',
+        'type'        => 'varchar',
+        'length'      => 255,
+        'not null'    => TRUE,
+      ),
+      'name' => array(
+        'description' => 'The name of the hook.',
+        'type'        => 'varchar',
+        'length'      => 255,
+        'not null'    => TRUE,
+      ),
+      'title' => array(
+        'description' => 'The title of the hook.',
+        'type'        => 'varchar',
+        'length'      => 255,
+        'not null'    => TRUE,
+      ),
+      'hook' => array(
+        'description' => 'The name of the hook.',
+        'type'        => 'varchar',
+        'length'      => 255,
+        'not null'    => TRUE,
+      ),
+      'hook_mappings' => array(
+        'description'    => 'Mapping of different fields of objects',
+        'type'           => 'text',
+        'size'           => 'big',
+        'serialize'      => TRUE,
+      ),
+      'hook_conditions' => array(
+        'description'    => 'Hook conditions',
+        'type'           => 'text',
+        'size'           => 'big',
+        'serialize'      => TRUE,
+      ),
+    ),
+    'primary key' => array('hid'),
+    'unique keys' => array(
+      'name' => array('name')
+    ),
+  );
+  
+  return $schema;
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function services_client_uninstall() {
+  // Remove all tables on uninstall
+  foreach (array_keys(services_client_schema()) as $table) {
+    db_drop_table($table);
+  }
+}
+
+/**
+ * Add 'debug' column to {services_client_connection} table.
+ */
+function services_client_update_7001() {
+  $ret = array();
+  
+  $ret[] = db_add_field('services_client_connection', 'debug', array(
+    'type'     => 'int',
+    'length'   => 2,
+    'not null' => TRUE,
+    'default'  => 0
+  ));
+
+  return $ret;
+}
+
+/**
+ * Rename 'ssl' column to 'secured'.
+ */
+function services_client_update_7002() {
+  $ret = array();
+
+  db_query('ALTER TABLE {services_client_connection} DROP `ssl`');
+
+  $ret[] = db_add_field('services_client_connection', 'secured', array(
+    'description' => 'Holds a switch whether its SSL connection',
+    'type'        => 'varchar',
+    'length'      => 3,
+    'not null'    => TRUE,
+    'default'     => 'no',
+  ));
+
+  return $ret;
+}

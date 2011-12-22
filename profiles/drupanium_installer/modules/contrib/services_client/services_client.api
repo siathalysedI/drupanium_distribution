@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * @file
+ * Services client allows you to push different objects from local drupal installation
+ * to remote servers via REST api.
+ */
+
+/**
+ * This hooks allows to alter source object which is going to be mapped
+ * to data sent via services. Use this hook to introduce new properties
+ * that can be easily mapped to remote objects.
+ *
+ * @param $object
+ *   Object that should be altered.
+ * @param $type
+ *   String representation of object type
+ *   - 'user'
+ *   - 'node'
+ */
+function hook_services_client_data_alter(&$object, $type) {
+  // Create timestamp from field_expiration
+  $object->expiration_date = strtotime($object->field_expiration[0]['value']);
+}
+
+/**
+ * Allows to alter request before its sent to client server
+ *
+ * @param ServicesClientCurlRequest $request
+ * @param stdClass $connection
+ */
+function hook_services_client_request_alter(ServicesClientCurlRequest &$request, $connection) {
+  if ($request->data['method'] == 'user.save') {
+    $request->data['method'] = 'acquia_user.save';
+  }
+}

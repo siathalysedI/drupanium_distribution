@@ -1,0 +1,36 @@
+<?php
+require DRUPAL_ROOT . '/profiles/standard/standard.install';
+
+/**
+ * Implements hook_install().
+ */
+
+function drupanium_installer_install() {
+  standard_install();
+	
+	$settings = array(
+    'body' => array(LANGUAGE_NONE => array(array())), 
+    'title' => "Welcome", 
+    'comment' => 2, 
+    'changed' => REQUEST_TIME, 
+    'moderate' => 0, 
+    'promote' => 1, 
+    'revision' => 1, 
+    'log' => '', 
+    'status' => 1, 
+    'sticky' => 0, 
+    'type' => 'article', 
+    'revisions' => NULL, 
+    'language' => LANGUAGE_NONE,
+  );
+	
+	$body = array(
+    'value' => "Welcome. You should generate some content using Devel Generate first and then visit Drupanium Debug, after that you should download the Drupanium App Source Code and start playing with it, enjoy.", 
+    'format' => filter_default_format(),
+  );
+  $settings['body'][$settings['language']][0] += $body;
+	
+	$node = (object) $settings;
+	
+	node_save($node);
+}

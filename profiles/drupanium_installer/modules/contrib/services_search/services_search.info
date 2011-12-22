@@ -1,0 +1,5 @@
+name = Services Search
+description = A Services resource for searching content and users.
+package = Services
+core = 7.x
+dependencies[] = services
