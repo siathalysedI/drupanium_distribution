@@ -87,6 +87,33 @@ function flag_service_services_resources() {
       ),
     ),
   );
+
+  $resources['flag']['actions']['countall'] = array(
+    'file' => array(
+      'type' => 'inc', 
+      'module' => 'flag_service', 
+      'name' => 'flag_service',
+    ),
+    'help' => t('Count the flags number on a specific node.'),
+    'access arguments' => array('access content'),
+    'callback' => 'flag_service_flag_countall',
+    'args' => array(
+      array(
+        'name' => 'flag_name',
+        'type' => 'string',
+        'description' => t('The name of the flag.'),
+        'source' => array('data' => 'flag_name'),
+        'optional' => FALSE,
+      ),
+      array(
+        'name' => 'content_id',
+        'type' => 'int',
+        'description' => t('The content ID.'),
+        'source' => array('data' => 'content_id'),
+        'optional' => FALSE,
+      ),
+    ),
+  );
   
   return $resources;
 }

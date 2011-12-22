@@ -84,6 +84,7 @@ function services_views_services_resources() {
   return $resources;
 }
 
+
 /**
  * Check the access permission to a given views.
  *

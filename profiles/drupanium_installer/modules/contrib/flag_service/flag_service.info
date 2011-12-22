@@ -5,9 +5,9 @@ dependencies[] = services
 dependencies[] = flag
 core = 7.x
 
-; Information added by drupal.org packaging script on 2011-09-10
+; Information added by drupal.org packaging script on 2011-12-08
 version = "7.x-3.x-dev"
 core = "7.x"
 project = "flag_service"
-datestamp = "1315613596"
+datestamp = "1323303893"
 

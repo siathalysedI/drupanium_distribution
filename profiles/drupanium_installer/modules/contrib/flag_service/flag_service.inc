@@ -92,3 +92,25 @@ function flag_service_is_flagged($flag_name, $content_id, $uid = NULL) {
   }
   return $flag->is_flagged($content_id, $uid);
 }
+
+/**
+ * Service wrapper to count a flag on a content.
+ *
+ * @param $flag_name
+ *   The flag name.
+ * @param $content_id
+ *   The content ID to check if it was flagged.
+ * @return
+ *   A object contain the number which shows how many users flagged a content.
+ */
+
+function flag_service_flag_countall($flag_name, $content_id) {
+  $query = db_select('flag_counts', 'fc');
+  $query->join('flags', 'f','f.fid = fc.fid');
+  $query->fields('fc', array('count'))
+        ->condition('fc.content_id', $content_id)
+        ->condition('f.name', $flag_name);
+  $result = $query->execute()->fetchObject();
+  return $result;                  
+}
+
